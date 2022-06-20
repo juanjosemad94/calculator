@@ -43,5 +43,6 @@ The function app expects golden ratio parameter 'ab' and returns a json object s
 {
     "ab":1080.0,
     "a":667.49072929542645241038318912,
-    "b":412.54062379198173820172014161}
+    "b":412.54062379198173820172014161
+}
 ```
