@@ -37,7 +37,7 @@ navigate to the function link to perform the calculation:
 http://localhost:7071/api/v1/calculate/{input}
 ```
 
-The function app expects golden ratio parameter 'ab' and returns a json object specifying the calculated values sides 'a' and 'b'.
+The function app expects golden ratio input parameter 'ab' and returns a json object specifying the calculated values sides 'a' and 'b'.
 
 ```
 {
