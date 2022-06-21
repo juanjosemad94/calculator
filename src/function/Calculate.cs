@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -13,8 +14,15 @@ using Microsoft.Extensions.Logging;
 
 namespace GoldenRatioCalculator
 {
-    public static class Calculate
+    public class Calculate
     {
+        private readonly IGoldenRatioCalculateService _calculateService;
+
+        public Calculate(IGoldenRatioCalculateService calculateService)
+        {
+            _calculateService = calculateService;
+        }
+
         [FunctionName(nameof(Calculate.CalculateGoldenRatio))]
         [OpenApiOperation(operationId: "CalculateGoldenRatio", tags: new[] { "Calculate the Golden Ratio" }, Summary = "Gets the Golden Ratio values", Description = "This gets the Golden Ratio values that was calculated from the input.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
@@ -22,22 +30,20 @@ namespace GoldenRatioCalculator
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(GoldenRatio), Summary = "The calculated golden ratio values", Description = "This returns golden ratio values a and b.")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid input supplied", Description = "Invalid input supplied")]
 
-        public static async Task<IActionResult> CalculateGoldenRatio(
+        public async Task<IActionResult> CalculateGoldenRatio(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "v1/CalculateGoldenRatio/{input}")] HttpRequest req,
             string input,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger calculate function processed a request.");
 
-            if (decimal.TryParse(input, out decimal ab))
+            try
             {
-                decimal a = ab / 1.618M;
-                decimal b = a / 1.618M;
-                return new OkObjectResult(new GoldenRatio { Ab = ab, A = a, B = b }.ToString());
+                return new OkObjectResult(await _calculateService.GetGoldenRatio(input));
             }
-            else
+            catch (Exception e)
             {
-                return new BadRequestObjectResult($"Invalid input supplied");
+                return new BadRequestObjectResult(e.Message);
             }
         }
     }
