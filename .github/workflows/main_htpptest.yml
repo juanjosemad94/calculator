@@ -14,9 +14,13 @@ env:
   DOTNET_VERSION: '6.0.x' # set this to the dotnet version to use
 
 jobs:
+
   build-and-deploy:
     runs-on: windows-latest
     steps:
+      - name: Set up Azure CLI
+        uses: azure/setup-azure-cli@v1
+
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@v2
 
